@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const weaponsRouter = require('./controllers/weapons')
 const armorsRouter = require('./controllers/armors')
 const inventoryRouter = require('./controllers/inventory')
+const enemyRouter = require('./controllers/enemy')
 
 console.log('connecting to', config.MONGODB_URI)
 
@@ -28,6 +29,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/weapons', weaponsRouter)
 app.use('/api/armor', armorsRouter)
 app.use('/api/inventory', inventoryRouter)
+app.use('/api/enemy', enemyRouter)
 
 
 app.use(middleware.unknownEndpoint)
