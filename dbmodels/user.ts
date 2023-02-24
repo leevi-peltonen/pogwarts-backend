@@ -1,7 +1,8 @@
-const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+import { IUser } from '../models/user';
+import { Schema, model} from 'mongoose'; 
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema<IUser>({
     username: {
         type: String,
         unique: true
@@ -10,16 +11,16 @@ const userSchema = new mongoose.Schema({
     
     weapons: [
         {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: "Weapon"
         }
     ],
-    armor: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Armor'
-        }
-    ],
+    // armor: [
+    //     {
+    //       type: Schema.Types.ObjectId,
+    //       ref: 'Armor'
+    //     }
+    // ]
     
     coins: Number,
     attributes: {
@@ -30,8 +31,8 @@ const userSchema = new mongoose.Schema({
     health: Number,
     availableAttributePoints: Number,
     experiencePoints: Number,
-    equippedWeapon: { type: mongoose.Schema.Types.ObjectId, ref: "Weapon" },
-    equippedArmor: { type: mongoose.Schema.Types.ObjectId, ref: "Armor" },
+    equippedWeapon: { type: Schema.Types.ObjectId, ref: "Weapon" },
+    //equippedArmor: { type: Schema.Types.ObjectId, ref: "Armor" },
     highestLevelOfKilledMonsters: Number,
     level: Number
 });
@@ -48,6 +49,4 @@ userSchema.set('toJSON', {
     }
 })
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+export const User = model<IUser>('User', userSchema);

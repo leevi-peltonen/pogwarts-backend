@@ -1,10 +1,14 @@
 const bcrypt = require('bcrypt')
-const usersRouter = require('express').Router()
-const User = require('../models/user')
-const Weapon = require('../models/weapon')
 const jwt = require('jsonwebtoken')
-// create user
-usersRouter.post('/', async (req, res) => {
+import { User } from '../dbmodels/user'
+import { Weapon } from '../dbmodels/weapon'
+import express, { Request, Response } from 'express'
+import { validateMongooseId } from '../utils/utils'
+
+export const userController = express.Router();
+
+//Register
+userController.post('/', async (req: Request, res: Response) => {
     const body = req.body;
 
     const saltRounds = 10;
@@ -27,15 +31,12 @@ usersRouter.post('/', async (req, res) => {
     });
 
     const savedUser = await user.save();
-    console.log(savedUser)
-    res.json(savedUser);
+    return res.json(savedUser);
 });
 
-// login
-
-usersRouter.post('/login', async (req, res) => {
+//Login
+userController.post('/login', async (req: Request, res: Response) => {
     const body = req.body
-
     const user = await User.findOne({ username: body.username })
     const passwordCorrect = user === null
         ? false
@@ -59,7 +60,7 @@ usersRouter.post('/login', async (req, res) => {
         { expiresIn: 60 * 60 }
     )
 
-    res
+    return res
         .status(200)
         .send({
             user,
@@ -67,35 +68,14 @@ usersRouter.post('/login', async (req, res) => {
         })
 })
 
-
-
-
-// get equipped weapon
-
-usersRouter.get('/:userId/equipped-weapon', (req, res) => {
-    User.findById(req.params.userId)
-    .then(data => {
-        Weapon.findById(data.equippedWeapon, (err, docs) => {
-            if(err) return res.status(500)
-            return res.json(docs)
-        })
-    })
+//Get users
+userController.get('/', async (req: Request, res: Response) => {
+    const users = await User.find()
+    res.json(users)
 })
 
-
-
-/*
-  Weapon.findById(req.params.id, (err, docs) => {
-    if (err) return res.status(500)
-    return res.json(docs)
-    */
-
-
-
-
-
-// get user by username
-usersRouter.get('/:username', (req, res) => {
+//Get by username
+userController.get('/:username', (req: Request, res: Response) => {
     User.find({ username: req.params.username})
     .then((data) => {
         res.json(data)
@@ -103,19 +83,28 @@ usersRouter.get('/:username', (req, res) => {
     
 })
 
-
-// get all users
-usersRouter.get('/', async (req, res) => {
-    const users = await User.find()
-    res.json(users)
+//Get equipped weapon
+userController.get('/equippedweapon/:id', async (req: Request, res: Response) => {
+    if (!validateMongooseId(req.params.id)){
+       return res.status(404).send('Not a valid mongoose id!');
+    }
+    const user = await User.findById(req.params.id);
+    if (user) {
+        const equippedWeapon = await Weapon.findById(user.equippedWeapon);
+        if (equippedWeapon) {
+            res.json(equippedWeapon);
+        } else {
+            res.status(404).send('Equipped weapon not found!');
+        }
+    } else {
+        res.status(404).send('User not found!');
+    }
 })
 
-//update coins by id
-usersRouter.patch('/:id/coins', (req,res) => {
+//Update coins by id
+userController.patch('/:id/coins', (req:Request, res: Response) => {
     User.findByIdAndUpdate(req.params.id, {coins: req.body.coins}, (err, doc) => {
         if (err) return res.status(500)
         return res.json(doc)
     })
 })
-
-module.exports = usersRouter;

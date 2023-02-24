@@ -1,18 +1,20 @@
-const inventoryRouter = require('express').Router()
-const User = require('../models/user')
+import express, { Request, Response } from 'express';
+import { validateMongooseId } from '../utils/utils';
+import { User } from '../dbmodels/user';
 
-
+export const inventoryController = express.Router();
 
 // Add weapon to inventory
-inventoryRouter.patch('/add-weapon/:userId/:weaponId', async (req, res) => {
-  User.updateOne({_id: req.params.userId}, {$push: {'weapons': req.params.weaponId}}, (err,doc) => {
-    if (err) return res.status(500)
-    return res.json(doc)
-  })
+inventoryController.patch('/add-weapon/:userId/:weaponId', async (req: Request, res: Response) => {
+  if ((!validateMongooseId(req.params.userId)) || (!validateMongooseId(req.params.weaponId))) {
+    return res.status(404).send('Not a valid mongoose id!');
+  }
+  const response = await User.updateOne({_id: req.params.userId}, {$push: {'weapons': req.params.weaponId}});
+  res.send(response);
 })
 
 // Remove weapon from inventory
-inventoryRouter.patch('/remove-weapon/:userId/:weaponId', async (req,res) => {
+inventoryController.patch('/remove-weapon/:userId/:weaponId', async (req,res) => {
   
   User.findOneAndUpdate(
     {_id: req.params.userId, "weapons.0": req.params.weaponId},
@@ -24,9 +26,9 @@ inventoryRouter.patch('/remove-weapon/:userId/:weaponId', async (req,res) => {
     }
   )
 })
-
+/*
 // Equip weapon
-inventoryRouter.patch('/equip/:userId/:wepId', (req, res) => {
+inventoryController.patch('/equip/:userId/:wepId', (req, res) => {
 
   /*
   let equippedWeapon;
@@ -42,13 +44,13 @@ inventoryRouter.patch('/equip/:userId/:wepId', (req, res) => {
           return res.json(equippedWeapon)
       })
   })
-  */
+  
 
   User.updateOne({_id: req.params.userId}, {$set: {equippedWeapon: req.params.wepId}}, (err, doc) => {
       
     if (err) return res.status(500)
     return res.json(doc)
-})
+  })
 })
 
-module.exports = inventoryRouter
+*/
