@@ -19,9 +19,9 @@ usersRouter.post('/', async (req, res) => {
         attributes: body.attributes,
         health: body.health,
         availableAttributePoints: body.availableAttributePoints,
-        experiencePoints: body.experiencePoints,
-        equippedWeapon: body.equippedWeapon,
-        equippedArmor: body.equippedArmor,
+        experience: body.experience,
+        equippedWeapon: body.equippedWeapon._id,
+        //equippedArmor: body.equippedArmor._id,
         highestLevelOfKilledMonsters: body.highestLevelOfKilledMonsters,
         level: body.level
     });
@@ -117,5 +117,23 @@ usersRouter.patch('/:id/coins', (req,res) => {
         return res.json(doc)
     })
 })
+
+
+//update player level
+usersRouter.patch('/:id/level', (req, res) => {
+    User.findByIdAndUpdate(req.params.id, {level: req.body.level }, (err, docs) => {
+        if (err) return res.status(500)
+        return res.json(docs)
+    } )
+})
+
+//update player xp
+usersRouter.patch('/:id/xp', (req, res) => {
+    User.findByIdAndUpdate(req.params.id, {experience: req.body.experience }, (err, docs) => {
+        if (err) return res.status(500)
+        return res.json(docs)
+    } )
+})
+
 
 module.exports = usersRouter;

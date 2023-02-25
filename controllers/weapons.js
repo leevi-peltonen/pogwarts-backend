@@ -17,6 +17,20 @@ weaponsRouter.post('/', async (req,res) => {
   res.json(savedWeapon)
 })
 
+weaponsRouter.get('/random', (req, res) => {
+  console.log('HALOO')
+  Weapon.aggregate([{ $sample: { size: 1 } }])
+  .exec((err, result) => {
+    if (err) {
+      res.status(500)
+    } else {
+      const randomWeapon = result[0];
+      res.json(randomWeapon)
+    }
+  });
+})
+
+
 //get weapon by id
 weaponsRouter.get('/:id', (req, res) => {
   Weapon.findById(req.params.id, (err, docs) => {
@@ -24,16 +38,14 @@ weaponsRouter.get('/:id', (req, res) => {
     return res.json(docs)
   })
 })
-/*
+
 //get weapon by name
-weaponsRouter.get('/name', (req, res) => {
+weaponsRouter.post('/name', (req, res) => {
   const body = req.body
-  Weapon.findOne({name: body.name})
-  .then(data => {
-    res.json(data)
+  Weapon.findOne({name: body.name}, (err, docs) => {
+    if (err) return res.status(500)
+    return res.json(docs)
   })
-  .catch(err => console.log(err))
 })
-*/
 
 module.exports = weaponsRouter

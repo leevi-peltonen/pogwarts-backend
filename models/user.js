@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     },
     health: Number,
     availableAttributePoints: Number,
-    experiencePoints: Number,
+    experience: Number,
     equippedWeapon: { type: mongoose.Schema.Types.ObjectId, ref: "Weapon" },
     equippedArmor: { type: mongoose.Schema.Types.ObjectId, ref: "Armor" },
     highestLevelOfKilledMonsters: Number,
