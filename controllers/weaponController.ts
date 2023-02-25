@@ -21,7 +21,7 @@ weaponController.post('/', async (req: Request, res: Response) => {
 });
 
 //get weapon by name
-weaponController.get('/name', async (req: any, res: any) => {
+weaponController.post('/name', async (req: any, res: any) => {
   const body = req.body
   const weapon = await Weapon.findOne({name: body.name});
   if (weapon) {
