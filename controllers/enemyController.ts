@@ -4,6 +4,17 @@ import { validateMongooseId } from '../utils/utils';
 
 export const enemyController = express.Router();
 
+//get all enemies
+enemyController.get('/', async (req: Request, res: Response) => {
+  const enemies = await Enemy.find()
+  if (enemies) {
+    res.json(enemies)
+  } else {
+    return res.status(404).send('No enemies found!');
+  }
+  
+})
+
 // get enemy by id
 enemyController.get('/id/:enemyId', async (req: Request, res: Response) => {
   if (!validateMongooseId(req.params.enemyId)) {
@@ -26,15 +37,4 @@ enemyController.post('/name', async (req: Request, res: Response) => {
   } else {
     return res.status(404).send('Enemy not found!');
   }
-})
-
-//get all enemies
-enemyController.get('/', async (req: Request, res: Response) => {
-  const enemies = await Enemy.find()
-  if (enemies) {
-    res.json(enemies)
-  } else {
-    return res.status(404).send('No enemies found!');
-  }
-  
 })
