@@ -1,8 +1,8 @@
 const uniqueValidator = require('mongoose-unique-validator');
-import { IUser } from '../models/user';
+import { IUserSchema } from '../models/userSchema';
 import { Schema, model} from 'mongoose'; 
 
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<IUserSchema>({
     username: {
         type: String,
         unique: true
@@ -49,4 +49,4 @@ userSchema.set('toJSON', {
     }
 })
 
-export const User = model<IUser>('User', userSchema);
+export const User = model<IUserSchema>('User', userSchema);

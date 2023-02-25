@@ -4,6 +4,8 @@ import { User } from '../dbmodels/user'
 import { Weapon } from '../dbmodels/weapon'
 import express, { Request, Response } from 'express'
 import { validateMongooseId } from '../utils/utils'
+import { IUserSchema } from '../models/userSchema'
+import { IUser } from '../models/user'
 
 export const userController = express.Router();
 
@@ -24,15 +26,30 @@ userController.post('/', async (req: Request, res: Response) => {
         health: body.health,
         availableAttributePoints: body.availableAttributePoints,
         experience: body.experience,
-        equippedWeapon: body.equippedWeapon._id,
+        equippedWeapon: body.equippedWeapon,
         //equippedArmor: body.equippedArmor._id,
         highestLevelOfKilledMonsters: body.highestLevelOfKilledMonsters,
         level: body.level
     });
 
-    const savedUser = await user.save();
-    console.log(savedUser)
-    res.json(savedUser);
+    const savedUser: IUser = await user.save();
+    
+    const responseUser: IUser = {
+        id: savedUser.id,
+        username: savedUser.username,
+        level: savedUser.level,
+        attributes: savedUser.attributes,
+        health: savedUser.health,
+        damage: savedUser.damage,
+        experience: savedUser.experience,
+        availableAttributePoints: savedUser.availableAttributePoints,
+        equippedWeapon: savedUser.equippedWeapon,
+        weapons: savedUser.weapons,
+        //armor: IArmor[];
+        coins: savedUser.coins,
+        highestLevelOfKilledMonsters: savedUser.highestLevelOfKilledMonsters
+    }
+    res.json(responseUser);
 });
 
 //Login
