@@ -1,7 +1,9 @@
-const armorsRouter = require('express').Router()
-const Armor = require('../models/armor')
+import express, { Request, Response } from 'express';
+import { Armor } from '../dbmodels/armor';
 
-armorsRouter.post('/', async (req,res) => {
+export const armorController = express.Router();
+
+armorController.post('/', async (req: Request, res: Response) => {
   const body = req.body
 
   const armor = new Armor({
@@ -13,8 +15,5 @@ armorsRouter.post('/', async (req,res) => {
   })
 
   const savedArmor = await armor.save()
-
   res.json(savedArmor)
 })
-
-module.exports = armorsRouter
