@@ -112,7 +112,7 @@ userController.patch('/:id/coins', (req:Request, res: Response) => {
 
 
 //update player level
-usersRouter.patch('/:id/level', (req, res) => {
+userController.patch('/:id/level', (req:Request, res: Response) => {
     User.findByIdAndUpdate(req.params.id, {level: req.body.level }, (err, docs) => {
         if (err) return res.status(500)
         return res.json(docs)
@@ -120,7 +120,7 @@ usersRouter.patch('/:id/level', (req, res) => {
 })
 
 //update player xp
-usersRouter.patch('/:id/xp', (req, res) => {
+userController.patch('/:id/xp', (req:Request, res: Response) => {
     User.findByIdAndUpdate(req.params.id, {experience: req.body.experience }, (err, docs) => {
         if (err) return res.status(500)
         return res.json(docs)

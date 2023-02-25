@@ -20,6 +20,15 @@ weaponController.post('/', async (req: Request, res: Response) => {
   res.json(savedWeapon)
 });
 
+//get weapon by name
+weaponController.get('/name', async (req: any, res: any) => {
+  const body = req.body
+  const weapon = await Weapon.findOne({name: body.name});
+  if (weapon) {
+    return res.json(weapon);
+  }
+});
+
 //get weapon by id
 weaponController.get('/:id', async (req: Request, res: Response) => {
   if (!validateMongooseId(req.params.id)) {
@@ -30,15 +39,3 @@ weaponController.get('/:id', async (req: Request, res: Response) => {
     return res.json(weapon);
   }
 });
-
-/*
-//get weapon by name
-weaponsRouter.get('/name', (req, res) => {
-  const body = req.body
-  Weapon.findOne({name: body.name})
-  .then(data => {
-    res.json(data)
-  })
-  .catch(err => console.log(err))
-})
-*/
